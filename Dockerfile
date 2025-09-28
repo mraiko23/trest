@@ -3,7 +3,7 @@ FROM node:20-bullseye
 
 # Установим Chromium и зависимости для запуска headless браузера
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    chromium \
+    chromium-browser \
     ca-certificates \
     fonts-liberation \
     libatk1.0-0 \
@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpangocairo-1.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+RUN if [ ! -f /usr/bin/chromium ] && [ -f /usr/bin/chromium-browser ]; then ln -s /usr/bin/chromium-browser /usr/bin/chromium || true; fi
 WORKDIR /app
 
 COPY package*.json ./
